@@ -37,7 +37,7 @@ public abstract class DefaultJdbiUserSecurityDAO implements IdentifiedUserSecuri
                     + " left join roles_permissions on roles.role_name = roles_permissions.role_name"
                     + " WHERE ";
     protected final static String EnabledRolesPermissionsBaseSelectPrefix =
-            RolesPermissionsBaseSelectPrefix + "roles.enabled AND ";
+            RolesPermissionsBaseSelectPrefix + "roles.enabled = 1 AND ";
 
     protected final static String UserRolesPermissionsBaseSelectPrefix =
             "SELECT users.user_Id AS userId, users.username AS username, users.password AS password,"
@@ -47,7 +47,7 @@ public abstract class DefaultJdbiUserSecurityDAO implements IdentifiedUserSecuri
                     + " left join roles_permissions on roles.role_name = roles_permissions.role_name"
                     + " WHERE ";
     protected final static String EnabledUserRolesPermissionsBaseSelectPrefix =
-            UserRolesPermissionsBaseSelectPrefix + "users.enabled AND (roles.enabled OR roles.enabled IS NULL) AND ";
+            UserRolesPermissionsBaseSelectPrefix + "users.enabled = 1 AND (roles.enabled = 1 OR roles.enabled IS NULL) AND ";
 
     protected boolean enabledColumnUsed = true;
 
@@ -114,7 +114,7 @@ public abstract class DefaultJdbiUserSecurityDAO implements IdentifiedUserSecuri
         return extractObjectGraphFromJoinResults(baseResults);
     }
 
-    @SqlQuery("SELECT user_Id AS id, username, password FROM users WHERE enabled AND username = :username")
+    @SqlQuery("SELECT user_Id AS id, username, password FROM users WHERE enabled =1 AND username = :username")
     @MapResultAsBean
     @Transaction(value = TransactionIsolationLevel.READ_COMMITTED)
     protected abstract Iterator<DefaultUserImpl> findEnabledUsersWithoutRoles(@Bind("username") String username);
